@@ -1,16 +1,13 @@
 const express = require('express');
 const app = express();
-const {createCourseRoutes} = require('./routes/course.js')
-const {userRouter} = require('./routes/user.js')
+const { courseRouter } = require('./routes/course');
+const { userRouter } = require('./routes/user');
 
+app.use(express.json()); 
 app.use("/user", userRouter);
+app.use("/course", courseRouter);
 
-createUserRoutes(app);
-
-createCourseRoutes(app);
-
-
-
-
-const port =3000;
-
+const port = 3000;
+app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+});
