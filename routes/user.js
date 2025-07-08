@@ -66,7 +66,7 @@ courseRouter.get("/preview", async function(req,res){
     userRouter.get("/purchases", userMiddleWare ,async function(req, res) {
     const userId = req.userId;
     
-
+// should check if the user had actually paid the price or not ?
    const purchases= await purchaseModel.find({
         userId
     })
