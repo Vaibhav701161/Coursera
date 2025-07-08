@@ -3,6 +3,8 @@ const userRouter = express.Router();
 const {userModel} = require("../db");
 const jwt = require("jsonwebtoken");
 const {JWT_USER_PASSWORD} = require("../config")
+const { purchaseModel} = require("../db");
+const { courseRouter } = require('./course');
 
 
 userRouter.post("/signup", async function(req, res) {
@@ -43,8 +45,34 @@ userRouter.post("/signin", async function(req, res) {
     res.json({ message: "signin endpoint" });
 });
 
-userRouter.get("/purchases", (req, res) => {
+userRouter.get("/purchase", userMiddleWare ,async function(req, res) {
+    const userId = req.userId;
+    const courseId = req.body.courseId;
+
+    await purchaseModel.create({
+        userId,
+        courseId
+    })
+// TODO:expecting user to pay i.e. : a payment gateway is needed here
     res.json({ message: "user purchases endpoint" });
 });
+
+courseRouter.get("/preview", async function(req,res){
+    const courses  = await coursemodel.find({});
+    res.json({
+        courses
+    })
+
+    userRouter.get("/purchases", userMiddleWare ,async function(req, res) {
+    const userId = req.userId;
+    
+
+   const purchases= await purchaseModel.find({
+        userId
+    })
+
+    res.json({ purchases});
+});
+})
 
 module.exports = { userRouter };
