@@ -2,13 +2,14 @@ const express = require('express');
 const userRouter = express.Router();
 const {userModel,purchaseModel} = require("../db");
 const jwt = require("jsonwebtoken");
-const {JWT_USER_PASSWORD} = require("../config")
+const bcrypt = require('bcryptjs');
+const {JWT_USER_PASSWORD} = require("../config");
 const { courseRouter } = require('./course');
 
 
-userRouter.post("/signup", async function(req, res) {
+userRouter.post("/signin", async function(req, res) {
     const {email,password}  = req.body;
-// TODO: ideally the passowrd should be hashed , and hence you can't compare the user provided password and the database password
+
     const user = await userModel.findOne({
         email:email,
         password:password
@@ -30,18 +31,45 @@ userRouter.post("/signup", async function(req, res) {
     res.json({ message: "signup endpoint" });
 });
 
-userRouter.post("/signin", async function(req, res) {
-    const {email , password , firstName , lastName} = req.body; // todo : add zod validation
-    // todo: hash the password so that the password is not stored as plaintext
+userRouter.post("/signup", async function(req, res) {
+    const {email , password , firstName , lastName} = req.body; 
+    try{
+        if (!email || !password || !firstName || !lastName){
+            return res.status(400).json({message: "All the fields are requires"})
+        }
 
-    //todo : put inside a try catch block 
-    await userModel.create({
+        const existingUser = userModel.findOne({email});
+        if(existingUser){
+            return res.status(400).json({message: "Email alreasy in use"})
+        }
+
+        const hashPassword  = await bcrypt.hash(password,10);
+
+        await userModel.create({
      email : email,
-     password:password,
+     password:hashPassword,
      firstName:firstName,
      lastName:lastName
     })
-    res.json({ message: "signin endpoint" });
+    res.json({ message: "signup endpoint" });
+
+    const token = jwt.sign({id: newUser._id}, JWT_USER_PASSWORD)
+
+    res.json({
+        message:"usser created successfully",
+        token: token
+    })
+
+    } catch(error){
+
+       console.error(error)
+       res.status(500).json({messgae:"server error , please try again later!"})
+
+    }
+
+    
+    
+    
 });
 
 userRouter.get("/purchase", userMiddleWare ,async function(req, res) {
