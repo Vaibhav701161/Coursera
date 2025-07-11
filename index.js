@@ -12,7 +12,7 @@ app.use("/api/v1/admin", adminRouter);
 
 
 async function main(){
-await mongoose.connect("mongodb+srv://vaibhavmittal146:Shalu@2907@cluster0.zsxydja.mongodb.net/")
+await mongoose.connect(MONGO_URL)
 const port = 3000;
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

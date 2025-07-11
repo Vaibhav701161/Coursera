@@ -1,7 +1,6 @@
 const { mongoose, models} = require('mongoose');
 const Schema = mongoose.Schema;
-mongoose.connect("mongodb+srv://vaibhavmittal146:Shalu@2907@cluster0.zsxydja.mongodb.net/");
-const ObjectId = mongoose.types.ObjectId;
+const ObjectId = mongoose.Types.ObjectId;
 
 
 const userSchema = new Schema({
@@ -36,7 +35,7 @@ const adminModel = mongoose.model("admin", adminSchema);
 const courseModel = mongoose.model("course", courseSchema);
 const purchaseModel = mongoose.model("purchase", purchaseSchema);
 
-models.export = {
+module.exports = {
     userModel,
     adminModel,
     courseModel,
